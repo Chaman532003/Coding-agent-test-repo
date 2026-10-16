@@ -1,0 +1,20 @@
+stack: python-pytest+node-vitest
+install_cmd: pip install -r requirements.in && if [ -f package.json ]; then npm install;
+  fi
+syntax_cmd: python -c "import os, sys; S = {'node_modules', '.venv', '.propel', 'vendor',
+  '.git', '__pycache__', 'dist', 'build', '.tox', '.mypy_cache'}; P = [os.path.join(r,
+  f) for r, d, fs in os.walk('.') if not d.__setitem__(slice(None), [x for x in d
+  if x not in S]) for f in fs if f.endswith('.py')]; [compile(open(p, encoding='utf-8').read(),
+  p, 'exec') for p in P]"; find . -path ./node_modules -prune -o \( -name '*.js' -o
+  -name '*.mjs' -o -name '*.cjs' \) -print0 | xargs -0 -r -n1 node --check
+build_cmd: python -m compileall -q -x '/(node_modules|\.venv|\.propel|vendor|\.git)/'
+  .
+test_cmd: PROPEL_OK=0; echo __PROPEL_STACK__:python-pytest; python -m pytest -q; [
+  $? -eq 0 ] || PROPEL_OK=1; echo __PROPEL_STACK__:node-vitest; if find . -path ./node_modules
+  -prune -o -path ./.venv -prune -o -path ./vendor -prune -o \( -name '*.test.*' -o
+  -name '*.spec.*' \) -print -quit | grep -q .; then npx vitest run; fi; [ $? -eq
+  0 ] || PROPEL_OK=1; [ "$PROPEL_OK" -eq 0 ]
+test_selector: case "{path}" in *.ts|*.tsx|*.js|*.jsx|*.mjs|*.cjs) echo __PROPEL_STACK__:node-vitest;
+  npx vitest run {path} ;; *) echo __PROPEL_STACK__:python-pytest; python -m pytest
+  -q {path} ;; esac
+dependency_file: requirements.in
