@@ -1,0 +1,4 @@
+# Direct dependencies for this project. Managed by Propel provisioning.
+fastapi==0.115.6
+httpx
+pytest==8.3.4
