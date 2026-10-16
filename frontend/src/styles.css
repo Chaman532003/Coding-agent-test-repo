@@ -106,3 +106,53 @@ body {
   background: #ecfdf5;
   border: 1px solid #a7f3d0;
 }
+
+/* Landing page header and hero styles */
+header {
+  background: white;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.06);
+}
+.header-inner {
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: 12px 16px;
+}
+.wordmark {
+  font-weight: 700;
+  color: var(--text);
+  font-size: 18px;
+}
+
+/* Keep header content on one row on small screens */
+header .header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+main {
+  padding: 48px 16px;
+}
+.hero {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 48px 16px;
+}
+.hero h1 {
+  margin: 0 0 12px;
+  font-size: 32px;
+  color: var(--text);
+}
+.hero p {
+  margin: 0 auto;
+  color: var(--muted);
+  max-width: 60ch;
+  line-height: 1.5;
+}
+
+/* Ensure no horizontal scroll at small widths */
+html, body {
+  overflow-x: hidden;
+}
