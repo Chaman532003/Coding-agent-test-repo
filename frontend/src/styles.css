@@ -5,6 +5,13 @@
   --muted: #6b7280;
   --error: #dc2626;
   --success: #059669;
+  --surface: #ffffff;
+  --container-max: 1200px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
   font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
 }
 
@@ -106,3 +113,34 @@ body {
   background: #ecfdf5;
   border: 1px solid #a7f3d0;
 }
+
+/* App shell header styles reused by Header component */
+.shell__header { position: sticky; top: 0; z-index: 10; border-bottom: 1px solid #e6e6e6; background: var(--surface); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+.shell__bar { display:flex; align-items:center; justify-content:space-between; gap:var(--space-4); max-width:var(--container-max); margin:0 auto; padding:12px var(--space-4); }
+.shell__brand { font-weight:800; color:var(--primary); font-size:18px; }
+
+/* Item grid and card styles adapted from template */
+.item-grid { padding-top: var(--space-6); padding-bottom: var(--space-6); }
+.item-grid .page-title { margin: 0 0 var(--space-3); font-size: 24px; }
+.item-grid__list { display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap:24px; list-style:none; padding:0; margin:0; }
+.item-card { display:flex; flex-direction:column; border-radius:12px; background:var(--surface); box-shadow:0 4px 12px rgba(15,23,42,0.06); overflow:hidden; }
+.item-card:hover { transform: translateY(-2px); box-shadow:0 8px 24px rgba(15,23,42,0.08); }
+.item-card__media { aspect-ratio:4/3; background:#f6f6f6; }
+.item-card__media img { width:100%; height:100%; object-fit:cover; display:block; }
+.item-card__body { padding:16px; display:flex; flex-direction:column; gap:8px; }
+.item-card__name { margin:0; font-weight:600; }
+.item-card__meta { margin:0; color:var(--muted); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.item-card__footer { margin-top:auto; display:flex; gap:12px; align-items:center; }
+.item-card__price { font-weight:700; font-size:16px; }
+
+/* Cart page basic styles */
+.cart { padding-top:var(--space-6); padding-bottom:var(--space-6); }
+.cart__lines { list-style:none; padding:0; margin:0 0 16px 0; }
+.cart-line { display:grid; grid-template-columns:64px 1fr auto auto; gap:12px; align-items:center; padding:12px 0; border-bottom:1px solid #f0f0f0; }
+.cart-line__image { width:64px; aspect-ratio:1/1; object-fit:cover; border-radius:8px; }
+.cart__summary { border:1px solid #eee; padding:16px; border-radius:8px; background:var(--surface); }
+
+@media (max-width:480px) {
+  .item-grid__list { grid-template-columns: 1fr; gap:16px; }
+}
+
