@@ -112,3 +112,53 @@ body {
   background: #ecfdf5;
   border: 1px solid #a7f3d0;
 }
+
+.landing-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+  color: #fff;
+}
+
+.landing-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 24px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.landing-brand {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.landing-login {
+  padding: 10px 20px;
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+.landing-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+}
+
+.landing-main h1 {
+  margin: 0 0 16px;
+  font-size: clamp(28px, 7vw, 48px);
+}
+
+.landing-main p {
+  margin: 0;
+  max-width: 520px;
+  font-size: 18px;
+  line-height: 1.5;
+}
