@@ -12,6 +12,7 @@ export default function App() {
   const [showLogin, setShowLogin] = useState(false);
   const [cart, setCart] = useState(null);
   const [showCart, setShowCart] = useState(false);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     restoreSession();
@@ -25,7 +26,8 @@ export default function App() {
     }
 
     try {
-      await fetchUserProfile();
+      const profileData = await fetchUserProfile();
+      setUser(profileData);
       const cartData = await fetchCart();
       setCart(cartData);
       setAppState("products");
@@ -67,6 +69,7 @@ export default function App() {
   function handleLogout() {
     clearToken();
     setCart(null);
+    setUser(null);
     setShowCart(false);
     setShowLogin(false);
     setAppState("landing");
@@ -91,6 +94,7 @@ export default function App() {
           cartCount={cart?.count || 0}
           onCartClick={() => setShowCart(!showCart)}
           onLogout={handleLogout}
+          userEmail={user?.email}
         />
         {showCart ? (
           <CartPage cart={cart} onRemove={handleRemoveFromCart} />
