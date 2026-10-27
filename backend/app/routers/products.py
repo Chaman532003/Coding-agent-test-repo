@@ -11,9 +11,13 @@ async def get_products(q: Optional[str] = None, sort: Optional[str] = None):
     # Start from the store copy (preserve original ordering)
     results = list(products_db)
 
-    # Filtering by q: case-insensitive substring in name or description
+    # Filtering by q: trim whitespace and do case-insensitive substring in name or description
     if q:
-        q_lower = q.lower()
+        q_stripped = q.strip()
+        if not q_stripped:
+            # query was only whitespace -> no matches
+            return []
+        q_lower = q_stripped.lower()
         results = [
             p
             for p in results
