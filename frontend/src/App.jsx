@@ -7,21 +7,37 @@ import Header from "./components/Header.jsx";
 import { fetchUserProfile, clearToken } from "./services/session.js";
 import { fetchCart, addToCart, removeFromCart } from "./services/cart.js";
 
+const PAGES = ["/", "/login", "/products", "/cart"];
+
+function currentPage() {
+  const path = window.location.pathname;
+  return PAGES.includes(path) ? path : "/";
+}
+
 export default function App() {
-  const [appState, setAppState] = useState("loading");
-  const [showLogin, setShowLogin] = useState(false);
+  const [ready, setReady] = useState(false);
+  const [page, setPage] = useState(currentPage());
   const [cart, setCart] = useState(null);
-  const [showCart, setShowCart] = useState(false);
   const [user, setUser] = useState(null);
 
   useEffect(() => {
     restoreSession();
+    const onPopState = () => setPage(currentPage());
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
   }, []);
+
+  function goTo(path) {
+    if (window.location.pathname !== path) {
+      window.history.pushState({}, "", path);
+    }
+    setPage(path);
+  }
 
   async function restoreSession() {
     const token = localStorage.getItem("token");
     if (!token) {
-      setAppState("landing");
+      setReady(true);
       return;
     }
 
@@ -30,10 +46,13 @@ export default function App() {
       setUser(profileData);
       const cartData = await fetchCart();
       setCart(cartData);
-      setAppState("products");
+      if (currentPage() === "/" || currentPage() === "/login") {
+        goTo("/products");
+      }
     } catch (err) {
       clearToken();
-      setAppState("landing");
+    } finally {
+      setReady(true);
     }
   }
 
@@ -41,8 +60,8 @@ export default function App() {
     try {
       const cartData = await fetchCart();
       setCart(cartData);
-      setShowLogin(false);
-      setAppState("products");
+      setUser({ email });
+      goTo("/products");
     } catch (err) {
       console.error("Failed to load cart:", err);
     }
@@ -70,38 +89,51 @@ export default function App() {
     clearToken();
     setCart(null);
     setUser(null);
-    setShowCart(false);
-    setShowLogin(false);
-    setAppState("landing");
+    goTo("/");
   }
 
-  if (appState === "loading") {
+  if (!ready) {
     return <div className="loading">Loading...</div>;
   }
 
-  if (appState === "landing") {
-    return showLogin ? (
-      <LoginForm onLoggedIn={handleLogin} />
-    ) : (
-      <LandingPage onLogin={() => setShowLogin(true)} />
-    );
+  if (!user) {
+    if (page === "/login") {
+      return <LoginForm onLoggedIn={handleLogin} />;
+    }
+    if (page === "/products") {
+      return (
+        <>
+          <Header onLogin={() => goTo("/login")} />
+          <ProductsPage onAdd={() => goTo("/login")} />
+        </>
+      );
+    }
+    if (page === "/cart") {
+      return (
+        <>
+          <Header onLogin={() => goTo("/login")} />
+          <main className="cart-page">
+            <p>Log in to see your cart</p>
+          </main>
+        </>
+      );
+    }
+    return <LandingPage onLogin={() => goTo("/login")} />;
   }
 
-  if (appState === "products") {
-    return (
-      <>
-        <Header
-          cartCount={cart?.count || 0}
-          onCartClick={() => setShowCart(!showCart)}
-          onLogout={handleLogout}
-          userEmail={user?.email}
-        />
-        {showCart ? (
-          <CartPage cart={cart} onRemove={handleRemoveFromCart} />
-        ) : (
-          <ProductsPage onAdd={handleAddToCart} />
-        )}
-      </>
-    );
-  }
+  return (
+    <>
+      <Header
+        cartCount={cart?.count || 0}
+        onCartClick={() => goTo(page === "/cart" ? "/products" : "/cart")}
+        onLogout={handleLogout}
+        userEmail={user?.email}
+      />
+      {page === "/cart" ? (
+        <CartPage cart={cart} onRemove={handleRemoveFromCart} />
+      ) : (
+        <ProductsPage onAdd={handleAddToCart} />
+      )}
+    </>
+  );
 }

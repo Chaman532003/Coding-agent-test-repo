@@ -1,4 +1,4 @@
-export default function Header({ cartCount, onCartClick, onLogout, userEmail }) {
+export default function Header({ cartCount, onCartClick, onLogout, onLogin, userEmail }) {
   return (
     <header className="app-header">
       <div>
@@ -6,12 +6,20 @@ export default function Header({ cartCount, onCartClick, onLogout, userEmail }) 
         {userEmail && <h2>Welcome, {userEmail}</h2>}
       </div>
       <div className="header-actions">
-        <button className="btn-cart" onClick={onCartClick}>
-          Cart ({cartCount})
-        </button>
-        <button className="btn-logout" onClick={onLogout}>
-          Log out
-        </button>
+        {onLogin ? (
+          <button className="btn-login" onClick={onLogin}>
+            Log in
+          </button>
+        ) : (
+          <>
+            <button className="btn-cart" onClick={onCartClick}>
+              Cart ({cartCount})
+            </button>
+            <button className="btn-logout" onClick={onLogout}>
+              Log out
+            </button>
+          </>
+        )}
       </div>
     </header>
   );
